@@ -1,0 +1,136 @@
+<head>
+        <style>
+      body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2f47ec;
+            margin-top: 4px;
+            margin-bottom: 20px;
+        }
+
+        div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="file"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3f42e8;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #03468d;
+        }
+
+        .radio-label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+<form  class="form-container" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h2>Profile Input</h2>
+    <div>
+        <label for="username">username:</label>
+        <input type="text" id="username" name="username" value="{{ username }}" readonly>
+    </div>
+    <div>
+        <label for="DOB">Date of Birth:</label>
+        <input type="date" id="DOB" name="DOB" required>
+    </div>
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+    </div>
+    <div>
+        <label for="Profile_Image">Profile Image:</label>
+        <input type="file" id="Profile_Image" name="Profile_Image" required>
+    </div>
+     <div>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+    </div>
+     <div>
+        <label>Gender:</label>
+         <span class="radio-label"><input type="radio" name="gender" value="male" required> Male</span>
+         <span class="radio-label"><input type="radio" name="gender" value="female" required> Female</span>
+    </div>
+     <div>
+        <label for="school">School:</label>
+        <input type="text" id="school" name="school" required>
+    </div>
+     <div>
+         <label for="bio">Bio:</label>
+         <textarea id="message" name="bio" rows="2" cols="30"></textarea>
+    </div>
+     <div>
+        <label for="interest">Interest:</label>
+        <input type="text" id="interest" name="interest">
+    </div>
+    <button type="submit">Submit</button>
+</form>

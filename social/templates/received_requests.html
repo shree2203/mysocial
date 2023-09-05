@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friend Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .request {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #e8e8e8;
+        }
+
+        .username {
+            font-family: BlinkMacSystemFont;
+            text-transform: capitalize;
+            font-size: 22px;
+            font-weight: bold;
+            color: #0b73e5;
+
+        }
+
+        .accept-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .accept-link:hover {
+            background-color: #3a853e;
+        }
+        .reject-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #e52a2a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .reject-link:hover {
+            background-color: #ce0303;
+        }
+
+        .no-requests {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+         {% if messages %}
+                    {% for message in messages %}
+                        <div style="background-color: #ee5555" class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+         {% if received_requests %}
+            {% for request in received_requests %}
+                <div class="request">
+                    <p><span class="username">{{ request.from_user.user.username }}</span> sent you a friend request.</p>
+                    <a class="accept-link" href="{% url 'accept_friend_request' request.id %}">Accept</a>
+                    <a class="reject-link" href="{% url 'reject_friend_request' request.id %}">Reject</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-requests">You have no pending friend requests.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

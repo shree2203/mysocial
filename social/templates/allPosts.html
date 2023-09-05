@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Posts</title>
+    <style>
+        .post-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .post-item {
+            flex: 1 0 25%; /* Each post will take up 25% of the available width */
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .post-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #efecec;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+       .post-image {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* Zoom-in effect on hover */
+        .post-image:hover {
+            transform: scale(1.5);
+        }
+    </style>
+</head>
+<body>
+    <h3>Posts</h3>
+    <div class="post-grid">
+        {% for post in user_all_posts %}
+            <div class="post-item">
+                <div class="post-container">
+                    <strong>Posted by:</strong> {{ user}}<br>
+                    <strong>{{ date }}</strong>
+                    <div>
+                        <strong>{{ post.caption }}</strong>
+                    </div>
+                    <br>
+{#                    {% if post.post_file %}#}
+                        <img class="post-image" src="{{ post.files.url }}" alt="Post Image">
+{#                    {% endif %}#}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

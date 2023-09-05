@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Social Media - Home</title>
+    <style>
+body {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #2880e0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: flex-end; /* Adjust to align the links as needed */
+    padding: 10px;
+}
+
+.navbar a {
+    color: #e8e5e5;
+    text-decoration: none;
+    padding: 8px 16px;
+}
+
+.navbar a:hover {
+    background-color: #8db5e0;
+    border-radius: 5px;
+}
+
+.navbar a.active {
+    background-color: #007BFF;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    margin-left: 35%;
+    margin-top: 17%;
+    padding: 4px;
+    max-width: 600px; /* Adjust the maximum width as per your layout */
+}
+
+span {
+    color: #007BFF;
+    font-family: Caladea;
+    font-size: 60px;
+}
+
+.tagline-animation {
+    animation: fadeInDown 1s ease-out;
+}
+
+/* Add a wrapper to limit content width and center it */
+.content-wrapper {
+    max-width: 1200px; /* Adjust the maximum width as per your layout */
+    margin: 0 auto; /* Center the content horizontally */
+    padding: 20px; /* Add some padding for spacing */
+}
+
+    </style>
+
+</head>
+<body>
+    {% extends "navBar.html" %}
+    {% block navbar %}
+        <div class="navbar">
+        {% if not user.is_authenticated %}
+            <a href="/signup">SignUp</a>
+            <a href="/login">LogIn</a>
+        {% endif %}
+         {% if user.is_authenticated %}
+            <a href="/displayProfile">Profile</a>
+            <a href="/logout">Log Out</a>
+         {% endif %}
+        </div>
+    {% endblock %}
+    <div class="content-wrapper">
+        {% block content %}
+            <h1 class="tagline-animation">Welcome to <span>Connectify</span></h1>
+        {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Posts </title>
+    <style>
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Four columns per row */
+            grid-gap: 20px; /* Gap between grid items */
+            margin: 4px 8px;
+        }
+
+        .post-item {
+             display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .post-image {
+            /* Style for the post image */
+            width: 100%;
+            margin: 0 auto;
+            height: auto;
+            object-fit: cover;
+            max-height: 250px;
+            border-radius: 9px;
+            transition: transform 0.5s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+         .post-image:hover {
+            transform: scale(1.1);
+        }
+         .btn{
+            background-color: #f14755;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 16px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+         }
+          button:hover {
+            background-color: #af0606;
+              color: white;
+        }
+        .left {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 300px;
+            max-height: 300px;
+            float: left;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #eee5e5;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .right {
+            flex: 1;
+            padding-left: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .grid{
+            display: flex;
+            justify-content: stretch;
+        }
+        @media (max-width: 768px) {
+            .post-grid {
+                grid-template-columns: repeat(2, 1fr); /* Two columns per row for small screens */
+            }
+
+            .post-item {
+                padding: 5px; /* Adjust padding for small screens */
+            }
+
+            .post-image {
+                max-height: 150px; /* Reduce image height for small screens */
+            }
+        }
+        @media (max-width: 576px) {
+            .post-grid {
+                grid-template-columns: repeat(1, 1fr); /* Single column for very small screens */
+            }
+        }
+        .post-item .left {
+            max-height: 800px;
+            max-width: 200px;
+        }
+
+        .over {
+             flex: 1 100%;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+    {% extends 'navBar.html' %}
+    {% block navbar %}
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/displayProfile">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    {% endblock %}
+    {% block content %}
+    <h2>All Posts of {{ user_view }}</h2>
+    <div class="post-grid">
+        {% for post in all_posts %}
+            <div class="post-item">
+                <div class="post-container">
+                    <div class="grid">
+                        <div class="left">
+                            <div>
+                                <strong>Posted by:</strong> {{ post.username.user }}<br>
+                                <strong>Date:</strong> {{ post.date }}<br>
+                            </div>
+                            <div class="over">
+                                {{ post.caption }}
+                            </div>
+                        </div>
+                        <div class="right">
+                             {% if post.username.user == user %}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden"  name="post_id_to_delete" value="{{ post.id }}">
+                                    <button type="submit" class="btn">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <br>
+                    {% if post.files %}
+                        <img class="post-image" src="{{ post.files.url }}" alt="Post Image">
+                    {% endif %}
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+</body>
+</html>

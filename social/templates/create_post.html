@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Post</title>
+    <style>
+/* Add your custom CSS styles here */
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Form container styles */
+.form-container {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Heading styles */
+h2 {
+    text-align: center;
+    color: #2f47ec;
+    margin-top: 4px;
+    margin-bottom: 20px;
+}
+
+/* Label styles */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Input styles */
+input[type="text"],
+input[type="date"],
+input[type="file"],
+input[type="tel"],
+textarea {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: white;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+/* Input focus styles */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="file"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3f42e8;
+}
+
+/* Radio button styles */
+input[type="radio"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Submit button styles */
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Submit button hover styles */
+button[type="submit"]:hover {
+    background-color: #03468d;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Radio label styles */
+.radio-label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Create New Post</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Post</button>
+        </form>
+    </div>
+</body>
+</html>

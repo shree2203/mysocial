@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends List</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            text-transform: capitalize;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .friend {
+            margin-bottom: 15px;
+            padding: 16px;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .username {
+            font-size: 17px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .friend-list-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .no-friends {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        .friend-list-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+        }
+
+        .friend-list-wrapper .friend:nth-child(odd) {
+            background-color: #ffe1e1;
+        }
+
+        .friend-list-wrapper .friend:nth-child(even) {
+            background-color: #e1e1ff;
+        }
+
+        .friend-list-wrapper .friend:hover {
+            transform: translateY(-2px);
+            transition: transform 0.3s ease;
+        }
+        .btn{
+            background-color: #f54747;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+{% extends 'navBar.html' %}
+{% block navbar %}
+        <div class="navbar">
+            <a href="/">Home</a>
+{#            <a href="{% url 'upload_profile_image' username=user_profile.user.username %}">Edit</a>#}
+            <a href="/displayProfile">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2 class="friend-list-title">Friends List</h2>
+        <div class="friend-list-wrapper">
+            {% if friends %}
+                {% for friend in friends %}
+                    <div class="friend">
+                        <p class="username">{{ friend.user.username }}</p>
+                        <form method="post" action="{% url 'unfriend' friend.user.username %}">
+                            {% csrf_token %}
+                            <button class="btn" type="submit">Unfriend</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-friends">You have no friends.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Profile</title>
+    <style>
+                .alert {
+          color: #de1b56;
+          padding: 10px;
+          border-radius: 4px;
+          position: fixed;
+          top: 15%;
+          left: 82%;
+          transform: translateX(-50%);
+          z-index: 9999;
+          opacity: 1;
+          pointer-events: none; /* Prevent clicking on the alert */
+        }
+
+        .alert.fade-out {
+          background-color: #af0404;
+          animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+          0% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+              display: none;
+          }
+        }
+        body {
+            font-family: Carlito;
+            margin: 0;
+            padding: 0;
+            background-color: #eeeeee;
+        }
+        #searchForm{
+            color: #0e0e0e;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            border: none #555555;
+            outline: none;
+        }
+        .left strong {
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .left {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fce7e7;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgba(246, 198, 198, 0.8) 100%);
+            z-index: -1;
+            border-radius: 5px;
+        }
+
+        .left p {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .left img {
+            {#max-width: 100px;#}
+            height: 30vh;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            display: block;
+            max-width: 90%;
+            margin-bottom: 20px;
+            transition: transform 0.4s ease-in-out;
+        }
+        .post-image:hover {
+            transform: scale(1.1);
+        }
+
+        .right {
+            flex: 1;
+            padding-left: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .right::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgb(88, 160, 236) 100%);
+            z-index: -1;
+            border-radius: 5px;
+        }
+
+        .right h3 {
+            margin-bottom: 15px;
+            color: #3739d0;
+
+        }
+
+        .right div {
+            margin: 5px 0;
+            padding: 10px;
+            {#background-color: #f6f4f4;#}
+            border-radius: 5px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgb(173, 204, 238) 100%);
+
+        }
+
+        form {
+            text-align: center;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .user-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #297ce7;
+
+        }
+        #searchButton{
+            color: white;
+            background: #0436a2;
+        }
+        #searchButton:hover{
+            background-color: #f0f6f1;
+            color: #1b1b1b;
+        }
+    </style>
+</head>
+<body>
+{% extends 'navBar.html' %}
+{% block navbar %}
+        <div class="navbar">
+            <a href="/">Home</a>
+            {% if isHome%}
+            <a href="/displayProfile">Profile</a>
+            {% endif %}
+            {% if not disable%}
+                <a href="{% url 'upload_profile_image' username=user_profile.user.username %}">Edit</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+            <div class="form">
+                <form method="post">
+                    {% csrf_token %}
+                    <input  type="text" id="searchForm" name="searchForm" placeholder="Search for a user...">
+                    <input type="submit" name="search" id="searchButton">
+                </form>
+            </div>
+        </div>
+{% endblock %}
+{% block content %}
+    <h1>{{ myProfile }} Profile</h1>
+    <div class="container">
+        <div class="left">
+             <img class="post-image" src="{{user_profile.profile_image.url}}" alt="Profile Image">
+            <p><strong>Username:</strong> {{ user_profile.user.username }}</p>
+            <p><strong>Date of Birth:</strong> {{ user_profile.dob }}</p>
+            <p><strong>Location:</strong> {{ user_profile.location }}</p>
+            <p><strong>Phone Number:</strong> {{ user_profile.phn_num }}</p>
+            <p><strong>Gender:</strong> {{ user_profile.gender }}</p>
+            <p><strong>School:</strong> {{ user_profile.school }}</p>
+            <p><strong>Bio:</strong> {{ user_profile.bio }}</p>
+            <p><strong>Interests:</strong> {{ user_profile.interest }}</p>
+        </div>
+
+        <div class="right">
+            {% if messages %}
+                    {% for message in messages %}
+                        <div style="background-color: #ea3939" class="alert alert-{{ message.tags }} fade-out">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {% if found %}
+                <div class="user-container" id="searchResults">
+                    <a href="{% url 'any_profile_view' user_id %}">{{ search }}</a>
+                    <button type="submit" name="add_button" value="{{ search }}">+</button>
+                </div>
+                {% elif search != None %}
+                    <p style="color: red">{{ search }}</p>
+                {% endif %}
+            </form>
+{#        suggested users#}
+            <h3>Suggested Users</h3>
+            <form method="post">
+                {% for f in all_user %}
+                    {% if f not in isFriend %}
+                        <div class="user-container">
+                             {%csrf_token %}
+                            <a href="{% url 'any_profile_view' f.id %}">{{ f.user }}</a>
+                            <button style="font-size: medium" type="submit" name="add_button" value="{{ f.user }}">Add+</button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {% if all_post %}
+            <input type="submit" name="all" value="View Posts({{ all_post }})">
+        {% else %}
+            <input type="submit" name="all" value="View Posts({{0}})" disabled>
+        {% endif %}
+
+        {% if not disable %}
+        <input type="submit" name="new_post" value="Start a New Post">
+        {% endif %}
+        {% if not disable %}
+            {% if pending %}
+                <input type="submit" name="friend_requests" value="Pending Friend Requests ({{ pending }})">
+            {% else %}
+                <input type="submit" name="friend_requests" value="Pending Friend Requests ({{ 0 }})" disabled>
+            {% endif %}
+        {% endif %}
+    {% if isSent %}
+        {% if friends %}
+            <input type="submit" name="friends" value="Friend List ({{ friends }})">
+        {% else %}
+            <input type="submit" name="friends" value="Friend List ({{ 0 }})" disabled>
+        {% endif %}
+    {% endif %}
+     {% if isSent%}
+        {% if sent_request %}
+            <input type="submit" name="sent_request" value="Sent Requests ({{ sent_request }})">
+        {% else %}
+            <input type="submit" name="sent_request" value="Sent Requests ({{ 0 }})" disabled>
+        {% endif %}
+    {% endif %}
+    </form>
+{% endblock %}
+</body>
+</html>

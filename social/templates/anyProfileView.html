@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% extends 'navBar.html' %}
+
+    {% block content %}
+        <h1>{{ user.username }}'s Profile</h1>
+
+        <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Bio: {{ user.bio }}</p>
+
+        <a href="{% url 'friend_requests' %}">Friend Requests</a>
+{#        <a href="{% url 'edit_profile' %}">Edit Profile</a>#}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Input Form</title>
+    <style>
+.form-container {
+    background-color: #ececec;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+/* Heading styles */
+h2 {
+    text-align: center;
+    color: #684aee;
+    margin-top: 4px;
+    margin-bottom: 5px;
+}
+
+#id_location{
+    height: 25px;
+}
+#id_bio{
+    height: 25px;
+}
+
+/* Label styles */
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 2px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Input styles */
+input[type="text"],
+input[type="date"],
+input[type="file"],
+input[type="tel"],
+textarea {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+/* Input focus styles */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="file"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3f42e8;
+}
+
+/* Radio button styles */
+input[type="radio"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+textarea {
+    height: 50px; /* Adjust the height as desired */
+}
+
+/* Submit button styles */
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Submit button hover styles */
+button[type="submit"]:hover {
+    background-color: #03468d;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Radio label styles */
+.radio-label {
+    display: inline-block;
+    margin-right: 10px;
+}
+p.error-message {
+            color: red;
+            position: absolute;
+            top: 80px;
+            left: 44%;
+            display: block;
+            margin: 0;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+    </style>
+</head>
+<body>
+{% extends 'navBar.html' %}
+
+{% block navbar %}
+        <div class="navbar">
+            <a href="/">Home</a>
+{#            <a id="profile-link" href="{% url 'display_profile' %}?profile_clicked=true">Profile</a>#}
+            {% if visible %}
+                <a href="/displayProfile">Profile</a>
+            {% endif %}
+{#            <form method="post"  >#}
+{#                {% csrf_token %}#}
+{#                <a href="/displayProfile">#}
+{#                <button name="profile" type="submit" value="">Profile</button>#}
+{#                </a>#}
+{#            </form>#}
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        {% if clicked and not visible %}
+            <div class="error-message">{{ message }}</div>
+    {% endif %}
+    <form class="form-container" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Profile Input</h2>
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+{% endblock %}
+</body>
+</html>

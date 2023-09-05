@@ -415,12 +415,14 @@ def get_all_user(request):
     print("users")
 
     usernames = User.objects.values('username')
-    print(usernames)
-    return JsonResponse({'usernames': list(usernames)})
-    # data = serializers.serialize('json', users)
-    # print(data)
-    # return JsonResponse({'users': data}, safe=False)
-    # return JsonResponse(users,safe=False)
+    # print(usernames,"user")
+    user_dict = {}
+    for x in usernames:
+        print(x)
+        user_dict['username'] = x['username']
+    # user_dict = {'username': user_data['username'] for user_data in usernames}
+    # print(user_dict)
+    return JsonResponse(user_dict,safe=False)
 
 # profile page view
 @csrf_exempt

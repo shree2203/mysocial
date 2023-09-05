@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Friend Requests Sent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2b60e7;
+        }
+
+        .friend-request {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.17        );
+        }
+
+        .friend-request p {
+            margin: 5px 0;
+        }
+
+        .no-requests {
+            text-align: center;
+            font-size: 20px;
+            color: #777;
+        }
+
+        .friend-request strong {
+            color: #45cc4a;
+        }
+    </style>
+</head>
+<body>
+{% extends 'navBar.html' %}
+{% block navbar %}
+        <div class="navbar">
+            <a href="/">Home</a>
+{#            <a href="{% url 'upload_profile_image' username=user_profile.user.username %}">Edit</a>#}
+            <a href="/displayProfile">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="header">Friend Requests Sent</div>
+        {% if friend_requests_sent %}
+            {% for request in friend_requests_sent %}
+                <div class="friend-request">
+                    <p><strong>Friend Request Sent to:</strong> {{ request.to_user.user }}</p>
+                    <p><strong>Date Sent:</strong> {{ request.created_at }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-requests">No friend requests sent yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+</body>
+</html>

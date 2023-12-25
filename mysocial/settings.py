@@ -16,19 +16,55 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Facebook API credentials
+FACEBOOK_APP_ID = "190534194145117"
+# FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET", default="your_app_secret")
+FACEBOOK_ACCESS_TOKEN = "EAACtSjL1p10BOxcM3H4VNvxIRjAhyOhcwPdMvwxK0w2HAZBk2JFbvbCUWdZAmP4hJ1hhJv2mhfFRKKJQVpA6c02iBNCqPFvtXuTVUXXJfKHLsseWFSIzl47JxRCdYGjKBLsqN35UoCvuUEcCodOo3OnhZCDbLRL0vkgsxxuISr74n7IiZAHGCOgUYiuEgNxLm8fAMNTL7ZAMHRZBkzKq9YdUNwu0AZD"
+
+
 CORS_ALLOW_ALL_HEADERS = True
 # Application definition
-
+SITE_ID = 1
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social',
     'corsheaders',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'VERSION': 'v12.0',
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -41,6 +77,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'mysocial.urls'

@@ -18,7 +18,7 @@ ALLOWED_HOSTS = []
 
 # Facebook API credentials
 FACEBOOK_APP_ID = "190534194145117"
-# FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET", default="your_app_secret")
+FACEBOOK_APP_SECRET = "5d0c6cae459e31f925ca0f55afe6bb25"
 FACEBOOK_ACCESS_TOKEN = "EAACtSjL1p10BOxcM3H4VNvxIRjAhyOhcwPdMvwxK0w2HAZBk2JFbvbCUWdZAmP4hJ1hhJv2mhfFRKKJQVpA6c02iBNCqPFvtXuTVUXXJfKHLsseWFSIzl47JxRCdYGjKBLsqN35UoCvuUEcCodOo3OnhZCDbLRL0vkgsxxuISr74n7IiZAHGCOgUYiuEgNxLm8fAMNTL7ZAMHRZBkzKq9YdUNwu0AZD"
 
 
@@ -42,27 +42,20 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
         'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'FIELDS': [
-            'id',
-            'email',
-            'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time',
-        ],
-        'VERSION': 'v12.0',
+        'APP': {
+            'client_id': '190534194145117',
+            'secret': '5d0c6cae459e31f925ca0f55afe6bb25',
+        }
     }
 }
 

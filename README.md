@@ -1,3 +1,3 @@
-clone the project in your local\n
-Create a virtual env
-then run the requirements.txt file with command "pip install -r requirements.txt"
+- clone the project in your local
+-  Create a virtual env
+- Run the command `pip install -r requirements.txt` to install all the required dependencies.

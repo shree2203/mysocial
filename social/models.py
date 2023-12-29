@@ -31,9 +31,6 @@ class UserPost(models.Model):
     caption = models.CharField(max_length=250, null=True)
     files = models.ImageField(null=False, upload_to='images/')
 
-    # def __str__(self):
-    #     return self.username
-
 
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(UserProfile, related_name='sent_friend_requests', on_delete=models.CASCADE)

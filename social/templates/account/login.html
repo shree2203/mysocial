@@ -1,6 +1,6 @@
 <head>
-     <style>
-         .navbar {
+    <style>
+        .navbar {
             background-color: #333;
             overflow: hidden;
         }
@@ -25,11 +25,11 @@
             align-items: center;
             height: 80vh; /* Adjust this to control the height of the container */
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
-            {#display: flex;#}
-            justify-content: center;
+        {#display: flex;#} justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -85,6 +85,19 @@
             color: red;
             text-align: center;
         }
+
+        .fb {
+            text-align: center;
+            justify-content: start;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        #OR {
+            text-align: center;
+        }
     </style>
 </head>
 {% extends 'navBar.html' %}
@@ -98,19 +111,24 @@
     {% if error %}
         <p>{{ error }}</p>
     {% endif %}
-     <div class="container">
+    <div class="container">
         <form method="post" class="login-form">
             <h2>Login</h2>
-             {% csrf_token %}
-              <div>
+            {% csrf_token %}
+            <div>
                 <label for="username">Username</label>
-                <input type="text" placeholder="Enter Username" id="username" name="username">
-              </div>
-              <div>
+                <input type="text" placeholder="Enter Username" id="username" name="username" required>
+            </div>
+            <div>
                 <label for="password">Password</label>
-                <input type="password" placeholder="Password" id="password" name="password">
-              </div>
-              <button type="submit">Login</button>
+                <input type="password" placeholder="Password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <div id="OR">OR</div>
+            <div class="fb">
+                <span>Login with: </span>
+                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </div>
         </form>
-     </div>
+    </div>
 {% endblock %}

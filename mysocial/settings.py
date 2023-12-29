@@ -19,8 +19,7 @@ ALLOWED_HOSTS = []
 # Facebook API credentials
 FACEBOOK_APP_ID = "190534194145117"
 FACEBOOK_APP_SECRET = "5d0c6cae459e31f925ca0f55afe6bb25"
-FACEBOOK_ACCESS_TOKEN = "EAACtSjL1p10BOxcM3H4VNvxIRjAhyOhcwPdMvwxK0w2HAZBk2JFbvbCUWdZAmP4hJ1hhJv2mhfFRKKJQVpA6c02iBNCqPFvtXuTVUXXJfKHLsseWFSIzl47JxRCdYGjKBLsqN35UoCvuUEcCodOo3OnhZCDbLRL0vkgsxxuISr74n7IiZAHGCOgUYiuEgNxLm8fAMNTL7ZAMHRZBkzKq9YdUNwu0AZD"
-
+FACEBOOK_ACCESS_TOKEN = "EAACtSjL1p10BO8vIZAUWooQV7IxqtE7aGXRhrGgzGQ98Tku79J6oOGZBVjC0CzpCw15DGWAQvCIrrK8E7UmzPS9PQNrcQKrsJiauOZCnWy7ZBmZAzVLcAOtGl86Ybjtp4n82SfrCZAFqxQajm68g9nYULGPFeHP63quzF2LrygUuhbwJXUSpeY9QzY"
 
 CORS_ALLOW_ALL_HEADERS = True
 # Application definition
@@ -78,7 +77,7 @@ ROOT_URLCONF = 'mysocial.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'allauth', 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,7 +130,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 STATIC_URL = '/static/'
 

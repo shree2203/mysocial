@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_exempt
+import facebook
+from mysocial.settings import FACEBOOK_ACCESS_TOKEN
 from social.models import UserProfile, UserPost, FriendRequest
 from datetime import datetime
 from django.utils import timezone
@@ -11,9 +13,9 @@ from django.contrib import messages
 from .forms import UserProfileForm
 from .forms import UserPostForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 
 
+@login_required()
 def logout_user(request):
     logout(request)
     return redirect('login')
@@ -33,7 +35,7 @@ def unfriend(request, username):
 
     user_profile.friends.remove(friend_to_unfriend)
 
-    return redirect('/displayProfile')
+    return redirect('/friends_list')
 
 
 def create_post(request):
@@ -51,6 +53,19 @@ def create_post(request):
 
 
 def display_posts(request, user_id=None):
+    facebook_access_token = FACEBOOK_ACCESS_TOKEN
+    graph = facebook.GraphAPI(access_token=facebook_access_token)
+
+    # graph = facebook.GraphAPI(access_token)
+    posts = graph.get_connections('me', 'feed')['data']
+    facebook_posts = [
+        {
+            'url': f'https://www.facebook.com/{post["id"]}',
+            'width': 500,
+            'show_text': True,
+        }
+        for post in posts
+    ]
     user = request.user
     if user_id is None:
         all_posts = UserPost.objects.filter(username__user=user)
@@ -67,7 +82,8 @@ def display_posts(request, user_id=None):
             post_to_delete = get_object_or_404(UserPost, id=post_id_to_delete, username__user=user)
             post_to_delete.delete()
             return redirect('display_posts')
-    return render(request, 'display_posts.html', {'all_posts': all_posts, 'user_view': user_view})
+    return render(request, 'display_posts.html',
+                  {'all_posts': all_posts, 'fb_post': facebook_posts, 'user_view': user_view})
 
 
 def upload_profile_image(request, username=None):
@@ -183,6 +199,8 @@ def send_friend_request(request, user_id):
 def received_friend_requests(request):
     logged_user = UserProfile.objects.get(user=request.user)
     received_requests = FriendRequest.objects.filter(to_user=logged_user)
+    if not received_requests:
+        return HttpResponseRedirect('/displayProfile')
     return render(request, 'received_requests.html', {'received_requests': received_requests})
 
 
@@ -199,7 +217,6 @@ def reject_friend_request(request, request_id):
 
 @login_required
 def accept_friend_request(request, request_id):
-    # print("accept")
     friend_request = get_object_or_404(FriendRequest, pk=request_id)
     logged_user = UserProfile.objects.get(user=request.user)
 
@@ -213,7 +230,6 @@ def accept_friend_request(request, request_id):
 
 @login_required
 def all_user_posts(request, user_id=None):
-    # print(user_id)
     user = request.user
     date = timezone.now().date()
     if user_id is None:
@@ -223,24 +239,6 @@ def all_user_posts(request, user_id=None):
 
     user_all_posts = reversed(user_all_posts)  # to display posts in latest order of addition
     return render(request, "allPosts.html", {'user_all_posts': user_all_posts, 'user': user, 'date': date})
-
-
-# api view
-# @login_required
-def user_posts(request, username):
-    user = User.objects.get(username=username)
-    date = timezone.now().date()
-    if request.method == 'POST':
-        caption = request.POST.get('caption')
-        file = request.POST.get('post_file')
-        print(caption,file)
-    if username is None:
-        user_all_posts = UserPost.objects.filter(username__user=user)
-    else:
-        user_all_posts = UserPost.objects.filter(username__user=user)
-    print(user_all_posts)
-    user_all_posts = reversed(user_all_posts)  # to display posts in latest order of addition
-    # return render(request, "allPosts.html", {'user_all_posts': user_all_posts, 'user': user, 'date': date})
 
 
 def start_post(request):
@@ -253,7 +251,6 @@ def start_post(request):
         caption = request.POST.get('caption')
         file = request.POST.get('post_file')
 
-        # print(date, " ", time, username)
         newpost = UserPost()
         newpost.username = user_profile
         newpost.date = date
@@ -299,9 +296,6 @@ def display_profile(request):
     only_to_user = [req.to_user for req in all_req]
     res_query = list(all_friends) + list(only_to_user)
 
-    # sugg_friends = logged_user.friends.all()
-
-    # print(sent_request,"sent")
     res = False
     curr_search = ""
     user_idd = ""
@@ -319,15 +313,12 @@ def display_profile(request):
         elif request.POST.get('selected_user_id') or request.POST.get('add_button'):
             if request.POST.get('selected_user_id'):
                 selected_user = request.POST.get('selected_user_id')
-                # print(selected_user, "sel")
             else:
                 selected_user = request.POST.get('add_button')
 
             sel_user = User.objects.get(username=selected_user)
             sel_user_profile = UserProfile.objects.get(user=sel_user)
-            print(sel_user, sel_user_profile)
             sel_user_id = sel_user_profile.pk
-            print(sel_user_id)
             to_user = UserProfile.objects.get(pk=sel_user_id)
             from_user = UserProfile.objects.get(user=request.user)
             existing_request = FriendRequest.objects.filter(from_user=from_user, to_user=to_user).first()
@@ -359,7 +350,6 @@ def display_profile(request):
                     user_idd = user_pro.id
                 except User.DoesNotExist or UserProfile.DoesNotExist:
                     user_idd = None
-                # print(user_pro.user_id,user.id)
             else:
                 try:
                     user_u = User.objects.get(email=inp)
@@ -405,77 +395,6 @@ def display_profile(request):
     return render(request, 'displayProfile.html', context)
 
 
-def get_all_user(request):
-    print("users")
-    usernames = User.objects.values('username')
-    # print(usernames,"user")
-    user_dict = [x for x in usernames]
-
-    return JsonResponse(user_dict, safe=False)
-
-
-# profile page view
-@csrf_exempt
-def create_profile(request, username=None):
-    # create a check if you are not re entering a record
-    if request.method == 'POST':
-        user_name = request.POST.get('username')
-        dob = request.POST.get('DOB')
-        loc = request.POST.get('location')
-        image = request.FILES.get('Profile_Image')
-        phone = request.POST.get('phone')
-        gender = request.POST.get('gender')
-        school = request.POST.get('school')
-        bio = request.POST.get('bio')
-        interest = request.POST.get('interest')
-        print(user_name, "sam", dob, phone, " ", image, end="\n")
-        dateTimeObj = datetime.strptime(dob, "%Y-%m-%d")
-        user_obj = User.objects.get(username=user_name)
-        print(user_obj)
-        # Check if a UserProfile already exists for the user
-        try:
-            user_profile = UserProfile.objects.get(user=user_obj)
-            print("new")
-        except UserProfile.DoesNotExist:
-            user_profile = UserProfile()
-            print("old")
-
-        user_profile.user = user_obj
-        user_profile.dob = dateTimeObj
-        user_profile.location = loc
-        user_profile.profile_image = image
-        user_profile.phone = phone
-        user_profile.gender = gender
-        user_profile.school = school
-        user_profile.bio = bio
-        user_profile.interest = interest
-        user_profile.save()
-        # print("save")
-        return JsonResponse({'message': 'Profile created successfully!!'})
-        # return redirect('display_profile')
-    return JsonResponse({'message': 'Invalid request method'})
-    # return render(request, 'profile.html', {'username': username})
-
-
-def get_user_data(request, username=None):
-    print("get")
-    user_obj = User.objects.get(username=username)
-    user_profile = UserProfile.objects.get(user=user_obj)
-    user_profile_data = {
-        'username': username,
-        'loc': user_profile.location,
-        'dob': user_profile.dob,
-        'image': user_profile.profile_image.url,
-        'phone': user_profile.phn_num,
-        'gender': user_profile.gender,
-        'bio': user_profile.bio,
-        'interest': user_profile.interest,
-        'school': user_profile.school
-    }
-    print("get2")
-    return JsonResponse(user_profile_data)
-
-
 # signup page VIEW
 @csrf_exempt
 def signup(request):
@@ -484,27 +403,23 @@ def signup(request):
         r = User.objects.filter(username=uname)
         # check if user already exist
         if r.count():
-            return HttpResponse('Username already exists', status=400)
-            # return render(request, 'signup.html', {'error': 'username exist'})
+            return render(request, 'signup.html', {'error': 'username exist'})
 
         email = request.POST.get('email')
         # check if email already exist
         r = User.objects.filter(email=email)
         if r.count():
-            return HttpResponse('Email already exists', status=400)
-            # return render(request, 'signup.html', {'error': 'email exist'})
+            return render(request, 'signup.html', {'error': 'email exist'})
 
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
 
         if pass1 != pass2:
-            return HttpResponse('passwords do not match', status=400)
-            # return render(request, 'signup.html', {'error': 'passwords do not match'})
+            return render(request, 'signup.html', {'error': 'passwords do not match'})
         else:
             my_user = User.objects.create_user(uname, email, pass1)
             my_user.save()
-            return JsonResponse({'message': 'user registered successfully'})
-            # return redirect('login')
+            return redirect('/login')
     return render(request, 'signup.html')
 
 
@@ -514,7 +429,6 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         pass1 = request.POST.get('password')
-        print(username, " ", pass1)
         user = authenticate(request, username=username, password=pass1)
         if user is not None:
             login(request, user)
@@ -527,11 +441,10 @@ def login_view(request):
             if not user_profile:
                 return HttpResponseRedirect(f'/uploadData/{username}')
             else:
-                # return HttpResponse("{'msg': 'User logged in successfully'}", status=200)
                 return HttpResponseRedirect('/displayProfile')
         else:
             msg = 'Invalid username or password'
-    return render(request, 'login.html', {'error': msg})
+    return render(request, 'account/login.html', {'error': msg})
 
 
 
